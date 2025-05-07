@@ -141,7 +141,7 @@ def main(experiment_name):
                 total_times[j, i] = total_time
 
         # Save the results to a numpy file for later analysis
-        np.save(f'{experiment_name}_benchmark_results.npy', {
+        np.save(f'contrib/{experiment_name}_benchmark_results.npy', {
             'batch_sizes': batch_sizes,
             'nsteps': nsteps,
             'total_times': total_times
