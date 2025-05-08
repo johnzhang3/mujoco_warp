@@ -70,7 +70,7 @@ def get_total_sim_time(mjcf_path, batch_size, nstep):
 
     return run_time
 
-def plot_heatmap(batch_sizes, nsteps, total_times, save_path='benchmark_heatmap.png'):
+def plot_heatmap(batch_sizes, nsteps, total_times, experiment_name, save_path='benchmark_heatmap.png'):
     """Creates and saves a log-scale heatmap visualization of the benchmark results.
     
     Args:
@@ -86,7 +86,7 @@ def plot_heatmap(batch_sizes, nsteps, total_times, save_path='benchmark_heatmap.
     epsilon = 1e-10
     log_times = np.log10(total_times + epsilon)
     im = ax.imshow(log_times, cmap='viridis')
-    ax.set_title("Log10(Total Simulation Time)", fontsize=14)
+    ax.set_title("Total Simulation Time", fontsize=14)
     
     # Show all ticks and label them
     ax.set_xticks(np.arange(len(nsteps)))
@@ -111,15 +111,15 @@ def plot_heatmap(batch_sizes, nsteps, total_times, save_path='benchmark_heatmap.
     
     # Add colorbar
     cbar = ax.figure.colorbar(im, ax=ax)
-    cbar.ax.set_ylabel('Log10(Simulation Time (s))', rotation=-90, va="bottom", fontsize=12)
+    cbar.ax.set_ylabel('total sim time (s)', rotation=-90, va="bottom", fontsize=12)
     
     # Add overall title
-    fig.suptitle("Sample-Based MPC Benchmark Results (Log Scale)", fontsize=16)
+    fig.suptitle(f"{experiment_name} benchmark results", fontsize=16)
     
     # Adjust layout and save
     fig.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the title
     plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    print(f"Log-scale heatmap saved to {save_path}")
+    print(f"heatmap saved to {save_path}")
 
     return fig
 
@@ -128,11 +128,15 @@ def main(experiment_name):
         mjcf_path = "test_data/humanoid/humanoid.xml"
     elif experiment_name == "quadruped":
         mjcf_path = "test_data/quadruped/scene.xml"
+    elif experiment_name == "quadruped_box":
+        mjcf_path = "test_data/quadruped/scene_box.xml"
+    else:
+        raise ValueError(f"Unknown experiment name: {experiment_name}")
 
     run_benchmark = True
     if run_benchmark:
         batch_sizes = [128, 256, 512, 1024, 2048, 4096, 8192]
-        nsteps = [1, 10, 50, 100, 200]
+        nsteps = [1, 10, 50, 100]
 
         total_times = np.zeros((len(batch_sizes), len(nsteps)))
         for (i, nstep) in enumerate(nsteps):
@@ -154,10 +158,11 @@ def main(experiment_name):
         total_times = data['total_times']
     
     # Plot and save the heatmap
-    plot_heatmap(batch_sizes, nsteps, total_times, save_path=f"contrib/{experiment_name}_benchmark_heatmap.png")
+    plot_heatmap(batch_sizes, nsteps, total_times, experiment_name, save_path=f"contrib/{experiment_name}_benchmark_heatmap.png")
 
     pass 
 
 if __name__ == "__main__":
-    main("humanoid")
-    main("quadruped")
+    # main("humanoid")
+    # main("quadruped")
+    main("quadruped_box")

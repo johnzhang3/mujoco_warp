@@ -1,4 +1,4 @@
-<mujoco model="go1 scene">
+<mujoco model="go1 box scene">
   <include file="go1.xml"/>
 
   <statistic center="0 0 0.1" extent="0.8"/>
@@ -19,10 +19,21 @@
   <worldbody>
     <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+
+    <body name="box" pos="2 0 0.15">
+        <geom name="box_geom" type="box" size="0.2 0.125 0.15" rgba="0 1 0 1" density="500"/>
+        <!-- Added mass to the box to make it dynamic and lightweight -->
+        <inertial mass="0.37" diaginertia="0.00118 0.00193 0.00172" pos="0 0 0" />
+        <!-- Free joint to allow movement in all directions -->
+        <joint name="box_slide" type="free"/>
+    </body>
+
   </worldbody>
 
   <keyframe>
-    <key name="home" qpos="0 0 0.27 1 0 0 0 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8"
+    <key name="home" qpos="1 0 0.15 
+               1 0 0 0 
+               0 0 0.27 1 0 0 0 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8"
       ctrl="0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8 0 0.9 -1.8"/>
   </keyframe>
 </mujoco>
